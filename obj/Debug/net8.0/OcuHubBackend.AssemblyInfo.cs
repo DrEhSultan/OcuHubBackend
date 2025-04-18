@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OcuHubBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c82c6d2351e5cbf0df5eaa83865390fd3aee7640")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+33a53839d145e9e8a61ab3a28beb7fe756daebd4")]
 [assembly: System.Reflection.AssemblyProductAttribute("OcuHubBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OcuHubBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
