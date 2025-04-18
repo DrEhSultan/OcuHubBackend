@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "7otnu0C5srfQ5s4yjVYDtCaijEjcR+zn8nw9kfA2FGg=",
+  "Source": "OcuHubBackend",
+  "BasePath": "_content/OcuHubBackend",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
