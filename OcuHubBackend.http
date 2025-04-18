@@ -1,0 +1,6 @@
+@OcuHubBackend_HostAddress = http://localhost:5103
+
+GET {{OcuHubBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
