@@ -25,8 +25,8 @@ namespace OcuHubBackend.Controllers
             return Ok(settings);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SetSettings(UserAppSettings settings)
+        [HttpPost("sync")]
+        public async Task<IActionResult> SyncSettings([FromBody] UserAppSettings settings)
         {
             var existing = await _context.UserAppSettings.FindAsync(settings.UserId);
 
@@ -36,10 +36,12 @@ namespace OcuHubBackend.Controllers
                 existing.DefaultSortMethod = settings.DefaultSortMethod;
                 existing.ShowTips = settings.ShowTips;
                 existing.ShowSubspecialties = settings.ShowSubspecialties;
+                existing.UpdatedAt = DateTime.UtcNow;
             }
             else
             {
                 settings.CreatedAt = DateTime.UtcNow;
+                settings.UpdatedAt = DateTime.UtcNow;
                 _context.UserAppSettings.Add(settings);
             }
 
