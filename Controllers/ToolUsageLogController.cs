@@ -1,4 +1,3 @@
-// File: Controllers/ToolUsageLogsController.cs
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OcuHubBackend.Data;
@@ -8,31 +7,32 @@ namespace OcuHubBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ToolUsageLogsController : ControllerBase
+    public class ToolUsageLogController : ControllerBase
     {
         private readonly OcuHubDbContext _context;
 
-        public ToolUsageLogsController(OcuHubDbContext context)
+        public ToolUsageLogController(OcuHubDbContext context)
         {
             _context = context;
         }
 
-        [HttpGet("by-user/{userId}")]
-        public async Task<ActionResult<IEnumerable<ToolUsageLog>>> GetToolUsageLogsByUser(Guid userId)
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<IEnumerable<ToolUsageLog>>> GetLogs(Guid userId)
         {
-            return await _context.ToolUsageLogs
-                .Where(log => log.UserId == userId)
+            var logs = await _context.ToolUsageLogs
+                .Where(l => l.UserId == userId)
                 .ToListAsync();
+
+            return Ok(logs);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ToolUsageLog>> LogToolUsage(ToolUsageLog log)
+        public async Task<IActionResult> SaveLog(ToolUsageLog log)
         {
-            log.Id = Guid.NewGuid();
             log.CreatedAt = DateTime.UtcNow;
             _context.ToolUsageLogs.Add(log);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetToolUsageLogsByUser), new { userId = log.UserId }, log);
+            return Ok(log);
         }
     }
 }

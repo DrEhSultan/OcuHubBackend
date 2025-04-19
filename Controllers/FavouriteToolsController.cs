@@ -16,47 +16,38 @@ namespace OcuHubBackend.Controllers
             _context = context;
         }
 
-        // GET: api/FavouriteTools/{userId}
         [HttpGet("{userId}")]
-        public async Task<IActionResult> GetFavouritesByUser(Guid userId)
+        public async Task<ActionResult<IEnumerable<FavouriteTool>>> GetFavourites(Guid userId)
         {
-            var favourites = await _context.FavouriteTools
-                .Include(f => f.Tool)
+            var favs = await _context.FavouriteTools
                 .Where(f => f.UserId == userId)
-                .OrderBy(f => f.CustomOrder)
                 .ToListAsync();
 
-            return Ok(favourites);
+            return Ok(favs);
         }
 
-        // POST: api/FavouriteTools
         [HttpPost]
-        public async Task<IActionResult> AddOrUpdateFavourite([FromBody] FavouriteTool favourite)
+        public async Task<IActionResult> SaveFavourite(FavouriteTool fav)
         {
             var existing = await _context.FavouriteTools
-                .FirstOrDefaultAsync(f => f.UserId == favourite.UserId && f.ToolId == favourite.ToolId);
+                .FirstOrDefaultAsync(f => f.UserId == fav.UserId && f.ToolId == fav.ToolId);
 
             if (existing != null)
             {
-                existing.CustomOrder = favourite.CustomOrder;
-                existing.IsCustom = favourite.IsCustom;
-                existing.UsageCount = favourite.UsageCount;
-                existing.UsageScore = favourite.UsageScore;
-                existing.LastUsedAt = favourite.LastUsedAt;
-                _context.FavouriteTools.Update(existing);
+                existing.IsCustom = fav.IsCustom;
+                existing.CustomOrder = fav.CustomOrder;
+                existing.LastUsedAt = DateTime.UtcNow;
             }
             else
             {
-                favourite.Id = Guid.NewGuid();
-                favourite.CreatedAt = DateTime.UtcNow;
-                _context.FavouriteTools.Add(favourite);
+                fav.CreatedAt = DateTime.UtcNow;
+                _context.FavouriteTools.Add(fav);
             }
 
             await _context.SaveChangesAsync();
-            return Ok(favourite);
+            return Ok(fav);
         }
 
-        // DELETE: api/FavouriteTools/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFavourite(Guid id)
         {
@@ -65,6 +56,7 @@ namespace OcuHubBackend.Controllers
 
             _context.FavouriteTools.Remove(fav);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
     }

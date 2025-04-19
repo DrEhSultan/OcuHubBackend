@@ -1,46 +1,49 @@
+// File: Controllers/AppVersionRequirementsController.cs
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OcuHubBackend.Data;
 using OcuHubBackend.Models;
 
-namespace OcuHubBackend.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class AppVersionRequirementsController : ControllerBase
+namespace OcuHubBackend.Controllers
 {
-    private readonly OcuHubDbContext _context;
-
-    public AppVersionRequirementsController(OcuHubDbContext context)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AppVersionRequirementsController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly OcuHubDbContext _context;
 
-    [HttpGet("{platform}")]
-    public async Task<IActionResult> GetRequirement(string platform)
-    {
-        var version = await _context.AppVersionRequirements
-            .FirstOrDefaultAsync(v => v.Platform.ToLower() == platform.ToLower());
-
-        return version == null ? NotFound() : Ok(version);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> SetRequirement([FromBody] AppVersionRequirement requirement)
-    {
-        var existing = await _context.AppVersionRequirements
-            .FirstOrDefaultAsync(v => v.Platform.ToLower() == requirement.Platform.ToLower());
-
-        if (existing != null)
+        public AppVersionRequirementsController(OcuHubDbContext context)
         {
-            _context.Entry(existing).CurrentValues.SetValues(requirement);
-        }
-        else
-        {
-            _context.AppVersionRequirements.Add(requirement);
+            _context = context;
         }
 
-        await _context.SaveChangesAsync();
-        return Ok(requirement);
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var versions = await _context.AppVersionRequirements.ToListAsync();
+            return Ok(versions);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateOrUpdate([FromBody] AppVersionRequirement version)
+        {
+            var existing = await _context.AppVersionRequirements
+                .FirstOrDefaultAsync(v => v.Platform == version.Platform);
+
+            if (existing != null)
+            {
+                existing.MinimumVersion = version.MinimumVersion;
+                existing.ForceUpdate = version.ForceUpdate;
+                existing.UpdatedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                version.UpdatedAt = DateTime.UtcNow;
+                _context.AppVersionRequirements.Add(version);
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(version);
+        }
     }
 }
