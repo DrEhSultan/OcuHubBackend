@@ -1,8 +1,7 @@
-// File: Controllers/UsersController.cs
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OcuHubBackend.Data;
+using OcuHubBackend.DTOs;
 using OcuHubBackend.Models;
+using OcuHubBackend.Data;
 
 namespace OcuHubBackend.Controllers
 {
@@ -17,63 +16,46 @@ namespace OcuHubBackend.Controllers
             _context = context;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUserById(Guid id)
+        [HttpPost("sync")]
+        public async Task<IActionResult> SyncUser([FromBody] UserDto dto)
         {
-            var user = await _context.Users
-                .Include(u => u.Role)
-                .Include(u => u.Country)
-                .FirstOrDefaultAsync(u => u.Id == id);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            if (user == null) return NotFound();
+            var existingUser = _context.Users.FirstOrDefault(u => u.FirebaseUid == dto.FirebaseUid);
 
-            return Ok(user);
-        }
+            if (existingUser != null)
+            {
+                // Update user
+                existingUser.Email = dto.Email;
+                existingUser.Name = dto.Name;
+                existingUser.PhotoUrl = dto.PhotoUrl;
+                existingUser.AuthProvider = dto.AuthProvider;
+                existingUser.EmailVerified = dto.EmailVerified;
+                existingUser.LastLoginAt = dto.LastLoginAt;
+                existingUser.UpdatedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                // Create new user
+                var newUser = new User
+                {
+                    FirebaseUid = dto.FirebaseUid,
+                    Email = dto.Email,
+                    Name = dto.Name,
+                    PhotoUrl = dto.PhotoUrl,
+                    AuthProvider = dto.AuthProvider,
+                    EmailVerified = dto.EmailVerified,
+                    CreatedAt = dto.CreatedAt,
+                    LastLoginAt = dto.LastLoginAt,
+                    UpdatedAt = DateTime.UtcNow
+                };
 
-        [HttpGet("firebase/{firebaseUid}")]
-        public async Task<ActionResult<User>> GetUserByFirebaseUid(string firebaseUid)
-        {
-            var user = await _context.Users
-                .Include(u => u.Role)
-                .Include(u => u.Country)
-                .FirstOrDefaultAsync(u => u.FirebaseUid == firebaseUid);
-
-            if (user == null) return NotFound();
-
-            return Ok(user);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(User user)
-        {
-            user.Id = Guid.NewGuid();
-            user.CreatedAt = DateTime.UtcNow;
-
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(Guid id, User updatedUser)
-        {
-            if (id != updatedUser.Id) return BadRequest();
-
-            var user = await _context.Users.FindAsync(id);
-            if (user == null) return NotFound();
-
-            user.Name = updatedUser.Name;
-            user.Email = updatedUser.Email;
-            user.Phone = updatedUser.Phone;
-            user.RoleId = updatedUser.RoleId;
-            user.CountryId = updatedUser.CountryId;
-            user.GraduationYear = updatedUser.GraduationYear;
-            user.ProfessionStart = updatedUser.ProfessionStart;
-            user.IsTester = updatedUser.IsTester;
+                _context.Users.Add(newUser);
+            }
 
             await _context.SaveChangesAsync();
-            return Ok(user);
+            return Ok(new { message = "User synced successfully" });
         }
     }
 }
