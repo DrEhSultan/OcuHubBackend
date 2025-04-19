@@ -20,7 +20,7 @@ namespace OcuHubBackend.Controllers
         public async Task<IActionResult> GetUserPlaces(string userId)
         {
             var userPlaces = await _context.UserPlaces
-                .Where(up => up.UserId == userId)
+                .Where(up => up.UserId.ToString() == userId)
                 .ToListAsync();
 
             return Ok(userPlaces);
@@ -29,12 +29,12 @@ namespace OcuHubBackend.Controllers
         [HttpPost("{userId}")]
         public async Task<IActionResult> SaveUserPlaces(string userId, [FromBody] List<UserPlace> places)
         {
-            var oldPlaces = _context.UserPlaces.Where(up => up.UserId == userId);
+            var oldPlaces = _context.UserPlaces.Where(up => up.UserId.ToString() == userId);
             _context.UserPlaces.RemoveRange(oldPlaces);
 
             foreach (var place in places)
             {
-                place.UserId = userId;
+                place.UserId = Guid.Parse(userId);
             }
 
             await _context.UserPlaces.AddRangeAsync(places);

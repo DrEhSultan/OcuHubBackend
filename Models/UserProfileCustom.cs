@@ -1,31 +1,20 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OcuHubBackend.Models
+namespace OcuHubBackend.Models;
+
+public class UserProfileCustom
 {
-    public class UserProfileCustom
-    {
-        [Key]
-        public Guid Id { get; set; }
+    [Key]
+    public Guid UserId { get; set; }
 
-        [Required]
-        public Guid UserId { get; set; }
-
-        [ForeignKey("UserId")]
-        public User? User { get; set; }
-
-        public string? Workplace { get; set; }
-
-        public string? Country { get; set; }
-
-        public string? City { get; set; }
-
-        public string? PhoneNumber { get; set; }
-
-        public string? Notes { get; set; }
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    }
+    public string FirebaseUid { get; set; } = null!;
+    public string FullName { get; set; } = null!;
+    public string ProfessionTitle { get; set; } = null!;
+    public int? DegreeId { get; set; }
+    public int? CountryId { get; set; }
+    public int? CityId { get; set; }
+    public int? SubspecialtyId { get; set; }
+    public string? WorkPlace { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

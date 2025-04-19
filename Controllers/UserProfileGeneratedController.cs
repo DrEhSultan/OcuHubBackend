@@ -1,5 +1,3 @@
-// Path: Controllers/UserProfileGeneratedController.cs
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OcuHubBackend.Data;
@@ -22,7 +20,7 @@ namespace OcuHubBackend.Controllers
         public async Task<ActionResult<UserProfileGenerated>> GetUserProfileGenerated(string firebaseUid)
         {
             var profile = await _context.UserProfileGenerateds
-                .FirstOrDefaultAsync(p => p.UserId == firebaseUid);
+                .FirstOrDefaultAsync(p => p.UserId.ToString() == firebaseUid);
 
             if (profile == null)
                 return NotFound();
