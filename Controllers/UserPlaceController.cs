@@ -1,3 +1,4 @@
+// File: Controllers/UserPlaceController.cs
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OcuHubBackend.Data;
@@ -19,8 +20,12 @@ namespace OcuHubBackend.Controllers
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserPlaces(string userId)
         {
+            if (!Guid.TryParse(userId, out var userGuid))
+                return BadRequest("Invalid user ID");
+
             var userPlaces = await _context.UserPlaces
-                .Where(up => up.UserId.ToString() == userId)
+                .Include(p => p.Place)
+                .Where(up => up.UserId == userGuid)
                 .ToListAsync();
 
             return Ok(userPlaces);
@@ -29,17 +34,21 @@ namespace OcuHubBackend.Controllers
         [HttpPost("{userId}")]
         public async Task<IActionResult> SaveUserPlaces(string userId, [FromBody] List<UserPlace> places)
         {
-            var oldPlaces = _context.UserPlaces.Where(up => up.UserId.ToString() == userId);
+            if (!Guid.TryParse(userId, out var userGuid))
+                return BadRequest("Invalid user ID");
+
+            var oldPlaces = _context.UserPlaces.Where(up => up.UserId == userGuid);
             _context.UserPlaces.RemoveRange(oldPlaces);
 
-            foreach (var place in places)
+            foreach (var p in places)
             {
-                place.UserId = Guid.Parse(userId);
+                p.Id = Guid.NewGuid();
+                p.UserId = userGuid;
+                p.CreatedAt = DateTime.UtcNow;
+                _context.UserPlaces.Add(p);
             }
 
-            await _context.UserPlaces.AddRangeAsync(places);
             await _context.SaveChangesAsync();
-
             return Ok();
         }
     }

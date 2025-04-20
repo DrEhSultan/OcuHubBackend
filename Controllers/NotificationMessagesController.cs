@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OcuHubBackend.Data;
-using OcuHubBackend.Models.Notifications;
+using OcuHubBackend.Models;
 
 namespace OcuHubBackend.Controllers
 {

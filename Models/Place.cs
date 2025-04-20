@@ -1,3 +1,4 @@
+// File: Models/Place.cs
 using System.ComponentModel.DataAnnotations;
 
 namespace OcuHubBackend.Models
@@ -6,8 +7,9 @@ namespace OcuHubBackend.Models
     {
         [Key]
         public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Type { get; set; } = "clinic";
+
+        public string Name { get; set; } = string.Empty;   // اسم المكان الأساسي
+        public string Type { get; set; } = "clinic";       // Clinic / Hospital / Center
 
         public Guid? CityId { get; set; }
         public City? City { get; set; }
@@ -15,6 +17,9 @@ namespace OcuHubBackend.Models
         public Guid? CountryId { get; set; }
         public Country? Country { get; set; }
 
-        public string? Notes { get; set; }
+        public string? LocationOverride { get; set; }      // لو حبينا نعرض المدينة/الدولة كـ نص موحد جاهز
+        public string? Notes { get; set; }                 // ملاحظات إضافية إن وجدت
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

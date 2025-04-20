@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace OcuHubBackend.Models.Notifications
+namespace OcuHubBackend.Models
 {
     public class UserNotificationStatus
     {

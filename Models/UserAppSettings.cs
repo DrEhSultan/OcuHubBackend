@@ -1,13 +1,17 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace OcuHubBackend.Models
 {
     public class UserAppSettings
     {
         public int Id { get; set; }
-        public string UserId { get; set; } = null!;
+
+        [ForeignKey(nameof(User))]
+        public Guid UserId { get; set; } // ✅ النوع بقى مطابق لـ User.Id
         public User User { get; set; } = null!;
 
-        public string NotificationMode { get; set; } = "All"; // Default value
-        public string DefaultSortMethod { get; set; } = "ByCategory"; // Default value
+        public string NotificationMode { get; set; } = "All";
+        public string DefaultSortMethod { get; set; } = "ByCategory";
         public bool ShowTips { get; set; } = true;
         public bool ShowSubspecialties { get; set; } = true;
 

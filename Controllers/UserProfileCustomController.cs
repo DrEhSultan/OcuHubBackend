@@ -1,3 +1,4 @@
+// File: Controllers/UserProfileCustomController.cs
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OcuHubBackend.Data;
@@ -17,7 +18,7 @@ public class UserProfileCustomController : ControllerBase
     }
 
     [HttpGet("{firebaseUid}")]
-    public async Task<ActionResult<UserProfileCustom>> GetProfile(string firebaseUid)
+    public async Task<ActionResult<UserProfileCustom>> GetUserProfile(string firebaseUid)
     {
         var profile = await _context.UserProfileCustoms
             .FirstOrDefaultAsync(p => p.FirebaseUid == firebaseUid);
@@ -29,30 +30,30 @@ public class UserProfileCustomController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserProfileCustom>> CreateOrUpdateProfile(UserProfileCustom model)
+    public async Task<IActionResult> SaveProfile(UserProfileCustom profile)
     {
         var existing = await _context.UserProfileCustoms
-            .FirstOrDefaultAsync(p => p.FirebaseUid == model.FirebaseUid);
+            .FirstOrDefaultAsync(p => p.FirebaseUid == profile.FirebaseUid);
 
-        if (existing != null)
+        if (existing == null)
         {
-            existing.FullName = model.FullName;
-            existing.ProfessionTitle = model.ProfessionTitle;
-            existing.DegreeId = model.DegreeId;
-            existing.CountryId = model.CountryId;
-            existing.CityId = model.CityId;
-            existing.SubspecialtyId = model.SubspecialtyId;
-            existing.WorkPlace = model.WorkPlace;
-            existing.UpdatedAt = DateTime.UtcNow;
+            profile.CreatedAt = DateTime.UtcNow;
+            profile.UpdatedAt = DateTime.UtcNow;
+
+            _context.UserProfileCustoms.Add(profile);
         }
         else
         {
-            model.CreatedAt = DateTime.UtcNow;
-            model.UpdatedAt = DateTime.UtcNow;
-            _context.UserProfileCustoms.Add(model);
+            existing.FullName = profile.FullName;
+            existing.ProfessionTitle = profile.ProfessionTitle;
+            existing.DegreeId = profile.DegreeId;
+            existing.CountryId = profile.CountryId;
+            existing.CityId = profile.CityId;
+            existing.SubspecialtyId = profile.SubspecialtyId;
+            existing.UpdatedAt = DateTime.UtcNow;
         }
 
         await _context.SaveChangesAsync();
-        return Ok(model);
+        return Ok();
     }
 }
