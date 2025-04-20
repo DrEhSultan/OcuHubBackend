@@ -21,6 +21,7 @@ namespace OcuHubBackend.Controllers
         {
             var locations = await _context.UsageLocations
                 .Where(x => x.UserId == userId)
+                .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
 
             return Ok(locations);

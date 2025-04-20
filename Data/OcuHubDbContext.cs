@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using OcuHubBackend.Models;
+using OcuHubBackend.Models.Notifications;
 
 namespace OcuHubBackend.Data
 {
@@ -34,5 +35,8 @@ namespace OcuHubBackend.Data
         public DbSet<UsageLocation> UsageLocations { get; set; } = default!;
         public DbSet<AppVersionRequirement> AppVersionRequirements { get; set; } = default!;
         public DbSet<UserFeedback> UserFeedbacks { get; set; } = default!;
+
+        public DbSet<NotificationMessage> NotificationMessages { get; set; } = default!;
+        public DbSet<UserNotificationStatus> UserNotificationStatuses { get; set; } = default!;
     }
 }
