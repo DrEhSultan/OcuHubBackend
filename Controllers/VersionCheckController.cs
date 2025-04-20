@@ -1,30 +1,43 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OcuHubBackend.Data;
+using OcuHubBackend.DTOs;
 using OcuHubBackend.Models;
+using OcuHubBackend.Data;
 
-namespace OcuHubBackend.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class VersionCheckController : ControllerBase
+namespace OcuHubBackend.Controllers
 {
-    private readonly OcuHubDbContext _context;
-
-    public VersionCheckController(OcuHubDbContext context)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class VersionCheckController : ControllerBase
     {
-        _context = context;
-    }
+        private readonly OcuHubDbContext _context;
 
-    [HttpGet("{platform}")]
-    public async Task<IActionResult> GetVersionRequirements(string platform)
-    {
-        var requirement = await _context.AppVersionRequirements
-            .Where(v => v.Platform.ToLower() == platform.ToLower())
-            .FirstOrDefaultAsync();
+        public VersionCheckController(OcuHubDbContext context)
+        {
+            _context = context;
+        }
 
-        if (requirement == null) return NotFound();
+        [HttpGet("{platform}")]
+        public async Task<ActionResult<VersionCheckResultDto>> GetVersionRequirement(string platform)
+        {
+            var requirement = await _context.AppVersionRequirements
+                .FirstOrDefaultAsync(r => r.Platform.ToLower() == platform.ToLower());
 
-        return Ok(requirement);
+            if (requirement == null)
+            {
+                return NotFound();
+            }
+
+            var result = new VersionCheckResultDto
+            {
+                Platform = requirement.Platform,
+                MinimumVersion = requirement.MinimumVersion,
+                ForceUpdate = requirement.ForceUpdate,
+                MigrationRequired = requirement.MigrationRequired,
+                MigrationNotes = requirement.MigrationNotes
+            };
+
+            return Ok(result);
+        }
     }
 }

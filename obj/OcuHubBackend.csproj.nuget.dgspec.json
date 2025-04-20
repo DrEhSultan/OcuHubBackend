@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/ehabsultan/Documents/Projects/OcuHubBackend/OcuHubBackend.csproj": {}
+    "/Users/ehabsultan/Documents/OcuHub/OcuHubBackend/OcuHubBackend.csproj": {}
   },
   "projects": {
-    "/Users/ehabsultan/Documents/Projects/OcuHubBackend/OcuHubBackend.csproj": {
+    "/Users/ehabsultan/Documents/OcuHub/OcuHubBackend/OcuHubBackend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ehabsultan/Documents/Projects/OcuHubBackend/OcuHubBackend.csproj",
+        "projectUniqueName": "/Users/ehabsultan/Documents/OcuHub/OcuHubBackend/OcuHubBackend.csproj",
         "projectName": "OcuHubBackend",
-        "projectPath": "/Users/ehabsultan/Documents/Projects/OcuHubBackend/OcuHubBackend.csproj",
+        "projectPath": "/Users/ehabsultan/Documents/OcuHub/OcuHubBackend/OcuHubBackend.csproj",
         "packagesPath": "/Users/ehabsultan/.nuget/packages/",
-        "outputPath": "/Users/ehabsultan/Documents/Projects/OcuHubBackend/obj/",
+        "outputPath": "/Users/ehabsultan/Documents/OcuHub/OcuHubBackend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/ehabsultan/.nuget/NuGet/NuGet.Config"

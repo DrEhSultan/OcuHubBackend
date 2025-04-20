@@ -1,19 +1,18 @@
-using System.ComponentModel.DataAnnotations;
+using System;
 
-namespace OcuHubBackend.Models;
-
-public class AppVersionRequirement
+namespace OcuHubBackend.Models
 {
-    [Key]
-    public int Id { get; set; }
+    public class AppVersionRequirement
+    {
+        public int Id { get; set; }
+        public string Platform { get; set; } = string.Empty; // "android" or "ios"
+        public string MinimumVersion { get; set; } = string.Empty;
+        public bool ForceUpdate { get; set; }
 
-    [Required]
-    public string Platform { get; set; } = null!;  // "ios" أو "android"
+        // ✅ الخصائص الجديدة:
+        public bool MigrationRequired { get; set; } = false;
+        public string? MigrationNotes { get; set; }
 
-    [Required]
-    public string MinimumVersion { get; set; } = null!;
-
-    public bool ForceUpdate { get; set; } = false;
-
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; }
+    }
 }
